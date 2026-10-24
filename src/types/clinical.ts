@@ -61,6 +61,20 @@ export interface Diagnosis {
   onsetYear: string;
   details?: string;
   icon?: string;
+  isPrivate?: boolean; // When true, patient has chosen to hide this diagnosis from family members
+  consentNotes?: string;
+}
+
+export interface DoctorAuth {
+  isVerified: boolean;
+  name: string;
+  nmcRegNo: string;
+  stateMedicalCouncil: string;
+  qualification: string;
+  hospitalStaffId: string;
+  department: string;
+  verifiedAt: string;
+  digitalSignatureToken: string;
 }
 
 export interface Medication {
@@ -220,6 +234,7 @@ export interface InvoiceBill {
 
 export interface FamilyMember {
   id: string;
+  patientId?: string;
   name: string;
   relationship: 'Self' | 'Mother' | 'Father' | 'Spouse' | 'Daughter' | 'Son';
   age: number;

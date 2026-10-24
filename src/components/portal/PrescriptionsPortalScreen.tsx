@@ -42,6 +42,46 @@ const MEDICINE_EXPLANATIONS: Record<string, MedicineDetails> = {
     commonSideEffects: ['Mild muscle aches', 'Joint stiffness', 'Mild digestive discomfort'],
     safetyWarnings: 'Avoid excessive grapefruit juice consumption. Report unexplained muscle soreness promptly.',
   },
+  'Salbutamol Inhaler': {
+    name: 'Salbutamol / Albuterol Inhaler (100 mcg)',
+    purpose: 'Rapidly relieves bronchial spasms, wheezing, and acute shortness of breath in bronchial asthma.',
+    mechanism: 'Selective beta-2 adrenergic receptor agonist that dilates bronchial smooth muscles within minutes.',
+    instructions: 'Inhale 1-2 puffs as needed (PRN) using spacer. Rinse mouth with water after inhalation.',
+    commonSideEffects: ['Mild hand tremor', 'Temporary palpitation or rapid heart rate', 'Nervousness'],
+    safetyWarnings: 'If breathlessness does not improve after 4 puffs, seek emergency medical care immediately.',
+  },
+  Rosuvastatin: {
+    name: 'Rosuvastatin Calcium (10 mg)',
+    purpose: 'Potent statin therapy for hyperlipidemia, reducing LDL and arterial plaque buildup.',
+    mechanism: 'Competitive inhibitor of HMG-CoA reductase, upregulating hepatic LDL receptors.',
+    instructions: 'Take once daily at bedtime with water.',
+    commonSideEffects: ['Mild myalgia', 'Headache', 'Abdominal discomfort'],
+    safetyWarnings: 'Report unusual muscle pain or dark-colored urine to your attending doctor.',
+  },
+  Montelukast: {
+    name: 'Montelukast Sodium (10 mg)',
+    purpose: 'Controls allergic asthma symptoms and prevents seasonal airway inflammation and rhinitis.',
+    mechanism: 'Leukotriene D4 receptor antagonist preventing airway edema and smooth muscle contraction.',
+    instructions: 'Take once daily in the evening, with or without food.',
+    commonSideEffects: ['Vivid dreams or mild headache', 'Upper respiratory tract infection'],
+    safetyWarnings: 'Continue taking regularly even when symptom-free. Not intended for acute rescue during attacks.',
+  },
+  Propranolol: {
+    name: 'Propranolol Hydrochloride (20 mg)',
+    purpose: 'Prophylaxis against chronic migraine attacks and vascular headache frequency reduction.',
+    mechanism: 'Non-selective beta-adrenergic blocker regulating cranial vascular tone and cortical spreading depression.',
+    instructions: 'Take once daily in the morning with food. Do not skip doses.',
+    commonSideEffects: ['Mild fatigue initially', 'Cold extremities', 'Slow pulse rate'],
+    safetyWarnings: 'Do not stop abruptly. Contraindicated in severe asthma.',
+  },
+  'CoQ10 & Vitamin B2 Complex': {
+    name: 'Coenzyme Q10 & Riboflavin B2 Complex',
+    purpose: 'Mitochondrial neuro-protection reducing oxidative stress and migraine recurrence.',
+    mechanism: 'Enhances cellular ATP generation in neuronal mitochondria.',
+    instructions: 'Take once daily with breakfast or lunch.',
+    commonSideEffects: ['Bright yellow urine (harmless Riboflavin excretion)', 'Mild stomach fullness'],
+    safetyWarnings: 'Store in cool dry place away from direct sunlight.',
+  },
 };
 
 export const PrescriptionsPortalScreen: React.FC<PrescriptionsPortalScreenProps> = ({
@@ -83,12 +123,12 @@ export const PrescriptionsPortalScreen: React.FC<PrescriptionsPortalScreenProps>
         <div>
           <h1 className="text-lg font-bold text-[#004357]">{t('prescriptions')}</h1>
           <p className="text-xs text-[#40484c]">
-            Active E-Prescriptions, Intake Timings & Purpose Guide
+            Active E-Prescriptions & Medicine Guide • {patient.name}
           </p>
         </div>
         <span className="px-2.5 py-1 rounded-lg bg-[#e5eeff] text-[#004357] font-bold text-xs flex items-center gap-1">
           <span className="material-symbols-outlined text-[15px] text-[#006141]">verified</span>
-          Dr. Marcus Chen, MD
+          {patient.attendingDoctor || 'Dr. Rajesh Sharma, MD'}
         </span>
       </div>
 
@@ -97,26 +137,26 @@ export const PrescriptionsPortalScreen: React.FC<PrescriptionsPortalScreenProps>
         <div className="flex items-center justify-between">
           <span className="font-bold text-xs text-[#004357] flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[#006398] text-[18px]">clinical_notes</span>
-            Recorded Symptoms on E-Prescription Sheet
+            Recorded Symptoms & Diagnoses • {patient.name}
           </span>
           <span className="text-[10px] text-[#70787d]">Visit Date: Today</span>
         </div>
 
         <div className="p-2.5 rounded-lg bg-[#eff4ff] space-y-1">
           <div className="text-[11px] text-[#0b1c30]">
-            <strong>Patient Symptoms Recorded:</strong> Occasional bilateral knee stiffness on waking, mild morning headache, elevated ambulatory BP during triage check. No chest pain or dyspnea.
+            <strong>Clinical Note Summary:</strong> {patient.recentNote?.content || 'Regular outpatient consultation and follow-up.'}
           </div>
           <div className="text-[10px] text-[#00472f] font-semibold flex items-center gap-1 pt-1">
             <span className="material-symbols-outlined text-[14px]">check_circle</span>
-            Confirmed Diagnosis: Essential Hypertension (Controlled), Type 2 Diabetes (Stable).
+            Confirmed Diagnosis: {patient.diagnoses.map((d) => d.name).join(', ') || 'Routine Preventive Care'}
           </div>
         </div>
 
-        {/* Severe Penicillin Allergy Alert on Prescription Sheet */}
+        {/* Allergy Alert on Prescription Sheet */}
         {patient.allergies.length > 0 && (
           <div className="p-2 rounded-lg bg-[#ffdad6] border border-[#ba1a1a]/30 text-[#93000a] text-[10px] font-bold flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[15px]">warning</span>
-            <span>PRESCRIPTION CONTRAINDICATION ALERT: Severe Penicillin Allergy (Anaphylaxis Risk)</span>
+            <span>PRESCRIPTION CONTRAINDICATION ALERT: {patient.allergies.map((a) => `${a.allergen} (${a.reaction})`).join('; ')}</span>
           </div>
         )}
       </div>

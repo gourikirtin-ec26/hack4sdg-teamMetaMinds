@@ -1,8 +1,13 @@
-import React, { useState, useRef } from 'react';
-import { ClinicalNote, Medication, Patient } from '../types/clinical';
+import React, { useState, useRef, useEffect } from 'react';
+import { ClinicalNote, DoctorAuth, Medication, Patient } from '../types/clinical';
 
 interface ChartScreenProps {
   patient: Patient;
+  appRole?: 'doctor' | 'patient' | 'wellness';
+  doctorAuth?: DoctorAuth;
+  onOpenDoctorLogin?: () => void;
+  onToggleDiagnosisPrivacy?: (dxId: string) => void;
+  onOpenPrivacyModal?: () => void;
   onOpenNewRx: () => void;
   onOpenUpdateVitals: () => void;
   onOpenAdminister: (med: Medication) => void;
@@ -16,6 +21,11 @@ interface ChartScreenProps {
 
 export const ChartScreen: React.FC<ChartScreenProps> = ({
   patient,
+  appRole = 'patient',
+  doctorAuth,
+  onOpenDoctorLogin,
+  onToggleDiagnosisPrivacy,
+  onOpenPrivacyModal,
   onOpenNewRx,
   onOpenUpdateVitals,
   onOpenAdminister,
@@ -29,6 +39,11 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
   const [activeTab, setActiveTab] = useState<'notes' | 'diagnoses' | 'medications' | 'labs'>('notes');
   const [activeLabPanel, setActiveLabPanel] = useState<number>(0);
   const [avatarError, setAvatarError] = useState(false);
+
+  useEffect(() => {
+    setAvatarError(false);
+    setActiveLabPanel(0);
+  }, [patient.id]);
 
   const notesRef = useRef<HTMLDivElement>(null);
   const diagnosesRef = useRef<HTMLDivElement>(null);
@@ -52,6 +67,60 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
 
   return (
     <div className="flex flex-col w-full pb-8">
+      {/* Doctor Verification Status Banner in Clinician Mode */}
+      {appRole === 'doctor' && (
+        <div className="mx-3 mt-3 p-3 rounded-xl border flex items-center justify-between shadow-xs transition-all bg-white border-[#dce9ff]">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                doctorAuth?.isVerified
+                  ? 'bg-[#dcfce7] text-[#166534]'
+                  : 'bg-[#ffdad6] text-[#ba1a1a] animate-pulse'
+              }`}
+            >
+              <span className="material-symbols-outlined text-[20px]">
+                {doctorAuth?.isVerified ? 'verified' : 'gpp_maybe'}
+              </span>
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-xs font-bold text-[#0b1c30]">
+                  {doctorAuth?.name || 'Dr. Rajesh Sharma, MD'}
+                </span>
+                {doctorAuth?.isVerified ? (
+                  <span className="px-2 py-0.5 rounded-full bg-[#dcfce7] text-[#166534] text-[10px] font-bold flex items-center gap-0.5">
+                    <span className="material-symbols-outlined text-[12px]">check_circle</span>
+                    NMC Verified
+                  </span>
+                ) : (
+                  <span className="px-2 py-0.5 rounded-full bg-[#ffdad6] text-[#ba1a1a] text-[10px] font-bold">
+                    ⚠️ Unverified Session
+                  </span>
+                )}
+              </div>
+              <p className="text-[10px] text-[#40484c] truncate">
+                {doctorAuth?.isVerified
+                  ? `Reg: ${doctorAuth.nmcRegNo} • ${doctorAuth.stateMedicalCouncil}`
+                  : 'Orders and SOAP signature locked pending National Medical Commission verification'}
+              </p>
+            </div>
+          </div>
+
+          {onOpenDoctorLogin && (
+            <button
+              onClick={onOpenDoctorLogin}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ml-2 cursor-pointer ${
+                doctorAuth?.isVerified
+                  ? 'bg-[#eff4ff] hover:bg-[#dce9ff] text-[#004357]'
+                  : 'bg-[#ba1a1a] hover:bg-[#93000a] text-white shadow-xs'
+              }`}
+            >
+              {doctorAuth?.isVerified ? 'Switch Doctor' : 'Verify Login'}
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Wellness & Preventive Proactive Banner */}
       {onOpenWellness && (
         <div className="mx-3 mt-3 p-3 rounded-xl bg-[#6ffbbe]/30 border border-[#4edea3] flex items-center justify-between shadow-xs">
@@ -407,18 +476,41 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
           </div>
         </div>
 
-        {/* Section 2: Active Diagnoses Card */}
+        {/* Section 2: Active Diagnoses Card (With Patient Data Sovereignty / Family Privacy Masking) */}
         <div ref={diagnosesRef} className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <h2 className="font-headline-sm text-[17px] text-[#0b1c30] font-semibold">Active Diagnoses</h2>
+          <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
-              <span className="font-label-sm text-[11px] text-[#40484c]">ICD-10 Coded</span>
-              <button
-                onClick={onOpenAddDiagnosis}
-                className="text-[11px] text-[#006398] font-bold hover:underline flex items-center gap-0.5"
-              >
-                <span className="material-symbols-outlined text-[14px]">add</span> Add
-              </button>
+              <h2 className="font-headline-sm text-[17px] text-[#0b1c30] font-semibold">Active Diagnoses</h2>
+              {patient.diagnoses.some((d) => d.isPrivate) && (
+                <span className="px-2 py-0.5 rounded-full bg-[#ffdad6] text-[#93000a] text-[10px] font-bold flex items-center gap-0.5">
+                  <span className="material-symbols-outlined text-[12px]">lock</span>
+                  Hidden from Family
+                </span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* Family Privacy Button */}
+              {onOpenPrivacyModal && (
+                <button
+                  type="button"
+                  onClick={onOpenPrivacyModal}
+                  className="px-2 py-1 rounded-lg bg-[#eff4ff] hover:bg-[#dce9ff] text-[#004357] text-[11px] font-bold flex items-center gap-1 transition-colors border border-[#dce9ff] cursor-pointer"
+                  title="Manage diagnosis visibility for family members (DPDP Act 2023)"
+                >
+                  <span className="material-symbols-outlined text-[14px] text-[#006398]">family_restroom</span>
+                  <span>Family Privacy</span>
+                </button>
+              )}
+
+              {appRole === 'doctor' && (
+                <button
+                  onClick={onOpenAddDiagnosis}
+                  className="text-[11px] text-[#006398] font-bold hover:underline flex items-center gap-0.5"
+                >
+                  <span className="material-symbols-outlined text-[14px]">add</span> Add ICD-10
+                </button>
+              )}
             </div>
           </div>
 
@@ -426,23 +518,37 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
             {patient.diagnoses.map((dx) => {
               const isManaged = dx.status === 'Managed';
               const isChronic = dx.status === 'Chronic';
+
               return (
                 <div
                   key={dx.id}
                   onClick={() => onShowToast(`ICD-10 ${dx.icd10}: ${dx.name} - ${dx.details || 'Active problem list'}`)}
-                  className="p-2.5 rounded-lg bg-[#eff4ff] flex items-center justify-between cursor-pointer hover:bg-[#dce9ff]/60 transition-colors"
+                  className={`p-2.5 rounded-lg flex items-center justify-between cursor-pointer transition-colors ${
+                    dx.isPrivate
+                      ? 'bg-[#fff5f5] hover:bg-[#fee2e2]/60 border border-[#fecaca]'
+                      : 'bg-[#eff4ff] hover:bg-[#dce9ff]/60 border border-transparent'
+                  }`}
                 >
-                  <div className="flex items-start gap-2.5">
-                    <div className="w-8 h-8 rounded-lg bg-[#e5eeff] flex items-center justify-center text-[#004357] mt-0.5">
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center mt-0.5 shrink-0 ${
+                        dx.isPrivate ? 'bg-[#fee2e2] text-[#991b1b]' : 'bg-[#e5eeff] text-[#004357]'
+                      }`}
+                    >
                       <span className="material-symbols-outlined text-[18px]">
-                        {dx.icon || 'cardiology'}
+                        {dx.isPrivate ? 'lock' : dx.icon || 'cardiology'}
                       </span>
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-label-lg text-[14px] text-[#0b1c30] font-bold">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className={`font-label-lg text-[14px] font-bold truncate ${
+                            dx.isPrivate ? 'text-[#991b1b]' : 'text-[#0b1c30]'
+                          }`}
+                        >
                           {dx.name}
                         </span>
+
                         {isManaged ? (
                           <span className="px-2 py-0.5 rounded-full bg-[#6ffbbe] text-[#002113] font-label-sm text-[11px] font-semibold">
                             Managed
@@ -456,17 +562,52 @@ export const ChartScreen: React.FC<ChartScreenProps> = ({
                             {dx.statusBadgeColor || dx.status}
                           </span>
                         )}
+
+                        {/* Family Privacy Status Indicator */}
+                        {dx.isPrivate ? (
+                          <span className="px-2 py-0.5 rounded-full bg-[#fee2e2] text-[#991b1b] font-label-sm text-[10px] font-bold flex items-center gap-0.5">
+                            <span className="material-symbols-outlined text-[11px]">lock</span>
+                            Hidden from Family
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 rounded-full bg-[#dcfce7] text-[#166534] font-label-sm text-[10px] font-bold flex items-center gap-0.5">
+                            <span className="material-symbols-outlined text-[11px]">visibility</span>
+                            Visible to Family
+                          </span>
+                        )}
                       </div>
-                      <span className="font-label-sm text-[11px] text-[#40484c]">
+
+                      <span className="font-label-sm text-[11px] text-[#40484c] block">
                         ICD-10: {dx.icd10} • Onset: {dx.onsetYear}
                         {dx.details && dx.details.includes('HbA1c') && ' • Last HbA1c: 6.8%'}
                         {dx.name.includes('Osteoarthritis') && ' • Monitored'}
                       </span>
                     </div>
                   </div>
-                  <span className="material-symbols-outlined text-[#40484c] text-[20px]">
-                    chevron_right
-                  </span>
+
+                  <div className="flex items-center gap-2 shrink-0 ml-2">
+                    {/* Patient direct toggle button */}
+                    {appRole === 'patient' && onToggleDiagnosisPrivacy && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onToggleDiagnosisPrivacy(dx.id);
+                        }}
+                        className={`px-2 py-1 rounded text-[10px] font-bold transition-all cursor-pointer ${
+                          dx.isPrivate
+                            ? 'bg-[#004357] text-white hover:bg-[#003140]'
+                            : 'bg-white border border-[#dce9ff] text-[#991b1b] hover:bg-[#fff5f5]'
+                        }`}
+                        title={dx.isPrivate ? 'Click to show this diagnosis to family members' : 'Click to hide this diagnosis from family members'}
+                      >
+                        {dx.isPrivate ? 'Show to Family' : 'Hide from Family'}
+                      </button>
+                    )}
+                    <span className="material-symbols-outlined text-[#40484c] text-[20px]">
+                      chevron_right
+                    </span>
+                  </div>
                 </div>
               );
             })}

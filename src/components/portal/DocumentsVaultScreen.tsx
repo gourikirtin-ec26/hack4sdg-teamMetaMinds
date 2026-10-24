@@ -73,7 +73,7 @@ export const DocumentsVaultScreen: React.FC<DocumentsVaultScreenProps> = ({
         <div>
           <h1 className="text-lg font-bold text-[#004357]">{t('records_vault')}</h1>
           <p className="text-xs text-[#40484c]">
-            Database of Prescriptions, Blood Tests, Scans & X-Rays
+            Database of Prescriptions, Blood Tests, Scans & X-Rays • {patient.name}
           </p>
         </div>
         <button
@@ -307,7 +307,7 @@ export const DocumentsVaultScreen: React.FC<DocumentsVaultScreenProps> = ({
                   type="text"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g., Dr. Marcus Chen Prescription, Lipid Panel Oct 2026..."
+                  placeholder="e.g., Dr. Rajesh Sharma Prescription, Lipid Panel Oct 2026..."
                   required
                   className="w-full h-10 px-3 bg-[#eff4ff] border border-[#bfc8cd] rounded-xl text-xs"
                 />

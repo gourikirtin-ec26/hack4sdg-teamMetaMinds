@@ -6,6 +6,7 @@ import { LanguageCode, getTranslation } from '../../utils/i18n';
 interface AppointmentsScreenProps {
   appointments: Appointment[];
   language: LanguageCode;
+  activeMemberName?: string;
   onBookAppointment: (apt: Omit<Appointment, 'id' | 'calendarSynced'>) => void;
   onCancelAppointment: (id: string) => void;
   onBookHomeLab: (test: HomeLabTest, date: string, slot: string) => void;
@@ -15,6 +16,7 @@ interface AppointmentsScreenProps {
 export const AppointmentsScreen: React.FC<AppointmentsScreenProps> = ({
   appointments,
   language,
+  activeMemberName,
   onBookAppointment,
   onCancelAppointment,
   onBookHomeLab,
@@ -407,7 +409,9 @@ END:VCALENDAR`;
             <div className="p-4 bg-[#eff4ff] border-b border-[#dce9ff] flex items-center justify-between">
               <div>
                 <h2 className="font-bold text-sm text-[#004357]">Schedule Doctor Appointment</h2>
-                <p className="text-xs text-[#40484c]">{bookingDoctor.name} • {bookingDoctor.specialty}</p>
+                <p className="text-xs text-[#40484c]">
+                  {bookingDoctor.name} • {bookingDoctor.specialty} {activeMemberName ? `(Patient: ${activeMemberName})` : ''}
+                </p>
               </div>
               <button
                 onClick={() => setBookingDoctor(null)}

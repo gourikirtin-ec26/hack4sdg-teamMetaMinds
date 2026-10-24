@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { DoctorAuth, FamilyMember } from '../types/clinical';
 import { LANGUAGES, LanguageCode, getTranslation } from '../utils/i18n';
 
 interface HeaderProps {
@@ -12,6 +13,10 @@ interface HeaderProps {
   selectedUnit: string;
   onSelectUnit: (unit: string) => void;
   activeMemberName?: string;
+  activeFamilyMember?: FamilyMember;
+  doctorAuth?: DoctorAuth;
+  onOpenDoctorLogin?: () => void;
+  onOpenDiagnosisPrivacy?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -24,7 +29,11 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenFamilyDashboard,
   selectedUnit,
   onSelectUnit,
-  activeMemberName = 'Eleanor Vance',
+  activeMemberName = 'Sunita Deshmukh',
+  activeFamilyMember,
+  doctorAuth,
+  onOpenDoctorLogin,
+  onOpenDiagnosisPrivacy,
 }) => {
   const [showUnitMenu, setShowUnitMenu] = useState(false);
   const [showLangMenu, setShowLangMenu] = useState(false);
@@ -51,24 +60,63 @@ export const Header: React.FC<HeaderProps> = ({
               </span>
 
               {appRole === 'doctor' ? (
-                <button
-                  onClick={() => setShowUnitMenu(!showUnitMenu)}
-                  className="px-1.5 py-0.5 rounded-full bg-[#cce5ff] hover:bg-[#bde9ff] text-[#001d31] font-label-sm text-[10px] font-bold uppercase transition-colors flex items-center gap-0.5"
-                  title="Change ICU Ward / Unit"
-                >
-                  <span>{selectedUnit}</span>
-                  <span className="material-symbols-outlined text-[12px]">arrow_drop_down</span>
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => setShowUnitMenu(!showUnitMenu)}
+                    className="px-1.5 py-0.5 rounded-full bg-[#cce5ff] hover:bg-[#bde9ff] text-[#001d31] font-label-sm text-[10px] font-bold uppercase transition-colors flex items-center gap-0.5"
+                    title="Change ICU Ward / Unit"
+                  >
+                    <span>{selectedUnit}</span>
+                    <span className="material-symbols-outlined text-[12px]">arrow_drop_down</span>
+                  </button>
+
+                  {onOpenDoctorLogin && (
+                    <button
+                      onClick={onOpenDoctorLogin}
+                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold transition-colors flex items-center gap-1 cursor-pointer ${
+                        doctorAuth?.isVerified
+                          ? 'bg-[#dcfce7] hover:bg-[#bbf7d0] text-[#166534] border border-[#86efac]'
+                          : 'bg-[#ffdad6] hover:bg-[#ffb4ab] text-[#ba1a1a] animate-pulse border border-[#ffb4ab]'
+                      }`}
+                      title={doctorAuth?.isVerified ? `Verified: ${doctorAuth.nmcRegNo}` : 'Click to verify doctor credentials'}
+                    >
+                      <span className="material-symbols-outlined text-[12px]">
+                        {doctorAuth?.isVerified ? 'verified' : 'gpp_maybe'}
+                      </span>
+                      <span className="hidden sm:inline">
+                        {doctorAuth?.isVerified ? 'NMC Verified' : 'Verify Login'}
+                      </span>
+                    </button>
+                  )}
+                </div>
               ) : (
-                <button
-                  onClick={onOpenFamilyDashboard}
-                  className="px-2 py-0.5 rounded-full bg-[#eff4ff] hover:bg-[#dce9ff] text-[#004357] font-label-sm text-[10px] font-bold transition-colors flex items-center gap-1 border border-[#93ccff]"
-                  title="Switch Family Member Dashboard"
-                >
-                  <span className="material-symbols-outlined text-[12px]">family_restroom</span>
-                  <span className="truncate max-w-[85px]">{activeMemberName}</span>
-                  <span className="material-symbols-outlined text-[12px]">arrow_drop_down</span>
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={onOpenFamilyDashboard}
+                    className="px-2 py-0.5 rounded-full bg-[#eff4ff] hover:bg-[#dce9ff] text-[#004357] font-label-sm text-[10px] font-bold transition-colors flex items-center gap-1 border border-[#93ccff]"
+                    title="Switch Family Member Dashboard"
+                  >
+                    <span className="material-symbols-outlined text-[12px]">family_restroom</span>
+                    <span className="truncate max-w-[85px]">{activeFamilyMember ? activeFamilyMember.name : activeMemberName}</span>
+                    {activeFamilyMember && (
+                      <span className="px-1 py-0.2 rounded bg-[#004357] text-white text-[8px] font-bold">
+                        {activeFamilyMember.relationship}
+                      </span>
+                    )}
+                    <span className="material-symbols-outlined text-[12px]">arrow_drop_down</span>
+                  </button>
+
+                  {onOpenDiagnosisPrivacy && (
+                    <button
+                      onClick={onOpenDiagnosisPrivacy}
+                      className="px-1.5 py-0.5 rounded-full bg-white hover:bg-[#eff4ff] text-[#004357] font-label-sm text-[10px] font-bold transition-colors flex items-center gap-0.5 border border-[#dce9ff] cursor-pointer"
+                      title="Family Diagnosis Privacy (Hide or show diagnoses from family members)"
+                    >
+                      <span className="material-symbols-outlined text-[12px] text-[#006398]">family_restroom</span>
+                      <span className="hidden sm:inline">Family Privacy</span>
+                    </button>
+                  )}
+                </div>
               )}
 
               {/* Unit Switcher Dropdown */}
@@ -213,41 +261,85 @@ export const Header: React.FC<HeaderProps> = ({
               title="Account Menu"
             >
               <div className="w-8 h-8 rounded-full bg-[#004357] flex items-center justify-center text-white text-xs font-bold">
-                {appRole === 'doctor' ? 'MC' : 'EV'}
+                {appRole === 'doctor'
+                  ? (doctorAuth?.name ? doctorAuth.name.replace('Dr. ', '').split(' ').map((n) => n[0]).join('').slice(0, 2) : 'RS')
+                  : (activeFamilyMember ? activeFamilyMember.name.split(' ').map((n) => n[0]).join('').slice(0, 2) : 'SD')}
               </div>
               <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#4edea3] ring-2 ring-white"></span>
             </button>
 
             {/* Profile Popover */}
             {showProfileMenu && (
-              <div className="absolute right-0 top-10 w-60 bg-white rounded-xl shadow-xl border border-[#dce9ff] p-3 z-50">
+              <div className="absolute right-0 top-10 w-64 bg-white rounded-xl shadow-xl border border-[#dce9ff] p-3 z-50">
                 <div className="flex items-center gap-2 pb-2 border-b border-[#e5eeff]">
-                  <div className="w-9 h-9 rounded-full bg-[#004357] flex items-center justify-center text-white text-xs font-bold">
-                    {appRole === 'doctor' ? 'MC' : 'EV'}
+                  <div className="w-9 h-9 rounded-full bg-[#004357] flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    {appRole === 'doctor'
+                      ? (doctorAuth?.name ? doctorAuth.name.replace('Dr. ', '').split(' ').map((n) => n[0]).join('').slice(0, 2) : 'RS')
+                      : (activeFamilyMember ? activeFamilyMember.name.split(' ').map((n) => n[0]).join('').slice(0, 2) : 'SD')}
                   </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#0b1c30]">
-                      {appRole === 'doctor' ? 'Dr. Marcus Chen, MD' : 'Eleanor Vance'}
+                  <div className="min-w-0">
+                    <div className="text-xs font-bold text-[#0b1c30] truncate">
+                      {appRole === 'doctor' ? (doctorAuth?.name || 'Dr. Rajesh Sharma, MD') : (activeFamilyMember?.name || activeMemberName || 'Sunita Deshmukh')}
                     </div>
-                    <div className="text-[10px] text-[#40484c]">
-                      {appRole === 'doctor' ? 'Attending Cardiologist' : 'ABHA: 91-8492-4820-1102'}
+                    <div className="text-[10px] text-[#40484c] truncate">
+                      {appRole === 'doctor'
+                        ? (doctorAuth?.isVerified ? `✓ ${doctorAuth.nmcRegNo}` : '⚠️ Unverified Doctor')
+                        : (activeFamilyMember ? `${activeFamilyMember.relationship} • ABHA: ${activeFamilyMember.abhaId}` : 'ABHA: 91-8492-4820-1102')}
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-2 text-[11px] text-[#70787d] space-y-1.5">
-                  <button
-                    onClick={() => {
-                      onOpenFamilyDashboard();
-                      setShowProfileMenu(false);
-                    }}
-                    className="w-full text-left py-1 text-[#006398] font-semibold flex items-center gap-1.5 hover:underline"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">family_restroom</span>
-                    <span>Switch Family Member</span>
-                  </button>
-                  <div className="flex justify-between">
-                    <span>Active Portal:</span> <strong className="text-[#0b1c30]">{appRole === 'doctor' ? 'Doctor EHR' : 'Patient Vault'}</strong>
+                  {appRole === 'doctor' ? (
+                    <>
+                      <div className="text-[10px] text-[#40484c] bg-[#eff4ff] p-1.5 rounded-lg border border-[#dce9ff]">
+                        <div className="font-semibold text-[#004357]">Council Verification:</div>
+                        <div className="truncate">{doctorAuth?.stateMedicalCouncil || 'National Medical Commission'}</div>
+                      </div>
+                      {onOpenDoctorLogin && (
+                        <button
+                          onClick={() => {
+                            onOpenDoctorLogin();
+                            setShowProfileMenu(false);
+                          }}
+                          className="w-full text-left py-1 text-[#006398] font-semibold flex items-center gap-1.5 hover:underline cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">verified</span>
+                          <span>Manage Doctor Verification</span>
+                        </button>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {onOpenDiagnosisPrivacy && (
+                        <button
+                          onClick={() => {
+                            onOpenDiagnosisPrivacy();
+                            setShowProfileMenu(false);
+                          }}
+                          className="w-full text-left py-1 text-[#006398] font-semibold flex items-center gap-1.5 hover:underline cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">family_restroom</span>
+                          <span>Family Diagnosis Privacy</span>
+                        </button>
+                      )}
+                      <button
+                        onClick={() => {
+                          onOpenFamilyDashboard();
+                          setShowProfileMenu(false);
+                        }}
+                        className="w-full text-left py-1 text-[#006398] font-semibold flex items-center gap-1.5 hover:underline cursor-pointer"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">family_restroom</span>
+                        <span>Switch Family Member</span>
+                      </button>
+                    </>
+                  )}
+                  <div className="flex justify-between pt-1 border-t border-[#f0f4ff]">
+                    <span>Active Portal:</span>{' '}
+                    <strong className="text-[#0b1c30]">
+                      {appRole === 'doctor' ? 'Doctor EHR' : appRole === 'wellness' ? 'Wellness Hub' : 'Patient Vault'}
+                    </strong>
                   </div>
                 </div>
 

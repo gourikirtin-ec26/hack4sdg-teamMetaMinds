@@ -87,7 +87,7 @@ export const AllergyDetailsModal: React.FC<AllergyDetailsModalProps> = ({
               Safe Alternative Drug Classes
             </div>
             <p className="text-[11px] text-[#40484c] leading-relaxed">
-              When treating suspected infections in Eleanor Vance: Prefer Macrolides (Azithromycin), Glycopeptides (Vancomycin), Fluoroquinolones, or Aminoglycosides.
+              When treating suspected infections in {patient.name}: Prefer Macrolides (Azithromycin), Glycopeptides (Vancomycin), Fluoroquinolones, or Aminoglycosides.
             </p>
           </div>
 

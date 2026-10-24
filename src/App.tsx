@@ -15,6 +15,7 @@ import {
   Appointment,
   ClinicalNote,
   Diagnosis,
+  DoctorAuth,
   FamilyMember,
   HealthDocument,
   HomeLabTest,
@@ -55,15 +56,23 @@ import { AllergyDetailsModal } from './components/modals/AllergyDetailsModal';
 import { AddDiagnosisModal } from './components/modals/AddDiagnosisModal';
 import { FamilyDashboardModal } from './components/portal/FamilyDashboardModal';
 import { EmergencySosModal } from './components/portal/EmergencySosModal';
+import { DoctorLoginModal, PRESET_DOCTORS } from './components/auth/DoctorLoginModal';
+import { DiagnosisPrivacyModal } from './components/portal/DiagnosisPrivacyModal';
 
 export default function App() {
   const [appRole, setAppRole] = useState<'doctor' | 'patient' | 'wellness'>('patient');
   const [language, setLanguage] = useState<LanguageCode>('en');
   const [activeScreen, setActiveScreen] = useState<string>('chart');
 
+  // Doctor verified authentication state
+  const [doctorAuth, setDoctorAuth] = useState<DoctorAuth>(PRESET_DOCTORS[0]);
+  const [isDoctorLoginOpen, setIsDoctorLoginOpen] = useState(false);
+  const [isDiagnosisPrivacyOpen, setIsDiagnosisPrivacyOpen] = useState(false);
+
   // Patients & Family state
   const [patients, setPatients] = useState<Patient[]>(INITIAL_PATIENTS);
-  const [selectedPatientId, setSelectedPatientId] = useState<string>('pt-eleanor-vance');
+  const [selectedPatientId, setSelectedPatientId] = useState<string>('pt-sunita-deshmukh');
+  const [familyMembers, setFamilyMembers] = useState<FamilyMember[]>(INITIAL_FAMILY_MEMBERS);
   const [activeFamilyMember, setActiveFamilyMember] = useState<FamilyMember>(INITIAL_FAMILY_MEMBERS[0]);
 
   // Appointments, documents, invoices
@@ -102,7 +111,11 @@ export default function App() {
   };
 
   const currentPatient =
-    patients.find((p) => p.id === selectedPatientId) || patients[0];
+    patients.find((p) => p.id === selectedPatientId) ||
+    (appRole === 'patient' && activeFamilyMember.patientId
+      ? patients.find((p) => p.id === activeFamilyMember.patientId)
+      : null) ||
+    patients[0];
 
   // Role toggle: Doctor vs Patient vs Wellness
   const handleToggleRole = (newRole: 'doctor' | 'patient' | 'wellness') => {
@@ -112,10 +125,26 @@ export default function App() {
       showToast('Switched to Wellness & Prevention Hub (Healthy Living)');
     } else if (newRole === 'doctor') {
       setActiveScreen('chart');
+      // If currently on an outpatient family member, set back to primary inpatient
+      if (
+        selectedPatientId.startsWith('pt-ramakant') ||
+        selectedPatientId.startsWith('pt-priya') ||
+        selectedPatientId.startsWith('pt-fam')
+      ) {
+        setSelectedPatientId('pt-sunita-deshmukh');
+      }
       showToast('Switched to Clinician EHR (Inpatient ICU Telemetry & MAR)');
     } else {
       setActiveScreen('chart');
-      showToast('Switched to Patient & Family Portal (Appointments, Prescriptions & Vault)');
+      // Switch back to active family member's patient profile
+      const targetId = activeFamilyMember.patientId || `pt-${activeFamilyMember.id}`;
+      const found = patients.find(
+        (p) => p.id === targetId || p.name.toLowerCase() === activeFamilyMember.name.toLowerCase()
+      );
+      if (found) {
+        setSelectedPatientId(found.id);
+      }
+      showToast(`Switched to Patient & Family Portal (${activeFamilyMember.name})`);
     }
   };
 
@@ -129,7 +158,98 @@ export default function App() {
   // Handler: Change active family member (Patient Mode)
   const handleSelectFamilyMember = (member: FamilyMember) => {
     setActiveFamilyMember(member);
+
+    // Look for matching patient record
+    const targetPatientId = member.patientId || `pt-${member.id}`;
+    const foundPatient = patients.find(
+      (p) =>
+        p.id === targetPatientId ||
+        p.id === member.id ||
+        p.name.toLowerCase() === member.name.toLowerCase()
+    );
+
+    if (foundPatient) {
+      setSelectedPatientId(foundPatient.id);
+    } else {
+      // Create new patient record for custom added family member
+      const newPatient: Patient = {
+        id: targetPatientId,
+        name: member.name,
+        age: member.age,
+        gender: member.gender,
+        mrn: `#MS-${Math.floor(10000 + Math.random() * 90000)}`,
+        room: 'Outpatient / Home Care',
+        department: 'General Medicine & Family Health',
+        bloodType: member.bloodGroup,
+        photoUrl: member.avatarUrl,
+        abhaId: member.abhaId,
+        allergies: [],
+        alerts: member.allergiesCount > 0 ? ['DOCUMENTED SENSITIVITY'] : ['NO KNOWN CONTRAINDICATIONS'],
+        acuity: 'Stable',
+        admitDate: 'Active Ambulatory',
+        attendingDoctor: 'Dr. Ananya Sharma, MBBS, MD',
+        vitals: {
+          bpSystolic: 120,
+          bpDiastolic: 80,
+          bpStatus: 'Normal Target',
+          pulse: 74,
+          rhythm: 'Sinus Rhythm',
+          spO2: 98,
+          spO2Mode: 'Room Air',
+          glucose: 100,
+          glucoseState: 'Fasting',
+          temp: 98.6,
+          respRate: 16,
+          syncTimeAgo: 'Sync 5m ago',
+          history: [
+            { time: '06:00', bp: '118/78', pulse: 72, spO2: 98, glucose: 98 },
+            { time: '08:00', bp: '120/80', pulse: 74, spO2: 98, glucose: 100 },
+          ],
+        },
+        recentNote: {
+          id: `note-${Date.now()}`,
+          noteNumber: 101,
+          type: 'Wellness Consultation',
+          authorName: 'Dr. Ananya Sharma, MBBS, MD',
+          authorRole: 'General Physician',
+          department: 'Outpatient Clinic',
+          timestamp: 'Today, 09:30 AM',
+          content: `Family health record active for ${member.name}. Routine preventive screening scheduled.`,
+          signedElectronically: true,
+          addenda: [],
+        },
+        pastNotes: [],
+        diagnoses: member.activeConditions.map((cond, i) => ({
+          id: `dx-${member.id}-${i}`,
+          name: cond,
+          status: 'Managed',
+          icd10: 'Z00.00',
+          onsetYear: '2023',
+          icon: 'health_and_safety',
+        })),
+        medications: [],
+        labs: [
+          {
+            id: `lab-${member.id}`,
+            title: 'Routine Health Screening',
+            collectedTime: 'Collected Today',
+            status: 'Completed',
+            metrics: [
+              { key: 'hgb', label: 'Hemoglobin', value: 13.8, unit: 'g/dL', refRange: '12.0 - 15.5 g/dL', status: 'normal' },
+              { key: 'glucose', label: 'Fasting Glucose', value: 98, unit: 'mg/dL', refRange: '70 - 100 mg/dL', status: 'normal' },
+            ],
+          },
+        ],
+      };
+      setPatients((prev) => [...prev, newPatient]);
+      setSelectedPatientId(targetPatientId);
+    }
+
     showToast(`Switched health dashboard to ${member.name} (${member.relationship})`);
+  };
+
+  const handleAddFamilyMember = (newMember: FamilyMember) => {
+    setFamilyMembers((prev) => [...prev, newMember]);
   };
 
   // Handler: Submit new Rx order
@@ -151,7 +271,7 @@ export default function App() {
       route: newOrderData.route,
       frequency: newOrderData.frequency,
       indication: newOrderData.indication,
-      prescribingDoctor: 'Dr. Marcus Chen, MD',
+      prescribingDoctor: doctorAuth?.name || 'Dr. Rajesh Sharma, MD',
       orderedAt: 'Just now',
       status: 'Active MAR',
       urgent: newOrderData.urgent,
@@ -168,7 +288,7 @@ export default function App() {
       timingLabel: 'Due Next Schedule',
       dueTime: 'Next Window',
       status: 'due',
-      prescribedBy: 'Dr. Marcus Chen, MD',
+      prescribedBy: doctorAuth?.name || 'Dr. Rajesh Sharma, MD',
     };
 
     setPatients((prev) =>
@@ -220,7 +340,7 @@ export default function App() {
                   status: 'given',
                   administeredTime: `${timeString}`,
                   timingLabel: `Given ${timeString}`,
-                  administeredBy: 'J. Morales, RN',
+                  administeredBy: 'S. Kulkarni, RN',
                 }
               : m
           ),
@@ -289,6 +409,21 @@ export default function App() {
       )
     );
     showToast(`Added ICD-10 diagnosis: ${dx.name}`);
+  };
+
+  // Handler: Toggle patient diagnosis privacy / visibility
+  const handleToggleDiagnosisPrivacy = (dxId: string) => {
+    setPatients((prev) =>
+      prev.map((p) => {
+        if (p.id !== currentPatient.id) return p;
+        return {
+          ...p,
+          diagnoses: p.diagnoses.map((dx) =>
+            dx.id === dxId ? { ...dx, isPrivate: !dx.isPrivate } : dx
+          ),
+        };
+      })
+    );
   };
 
   // Handler: Add Allergy
@@ -444,7 +579,11 @@ export default function App() {
             setSelectedUnit(u);
             showToast(`Switched ward to ${u}`);
           }}
+          activeFamilyMember={activeFamilyMember}
           activeMemberName={activeFamilyMember.name}
+          doctorAuth={doctorAuth}
+          onOpenDoctorLogin={() => setIsDoctorLoginOpen(true)}
+          onOpenDiagnosisPrivacy={() => setIsDiagnosisPrivacyOpen(true)}
         />
 
         {/* Scrollable Main Screen Content */}
@@ -453,13 +592,39 @@ export default function App() {
           {activeScreen === 'chart' && (
             <ChartScreen
               patient={currentPatient}
-              onOpenNewRx={() => setIsNewRxOpen(true)}
+              appRole={appRole}
+              doctorAuth={doctorAuth}
+              onOpenDoctorLogin={() => setIsDoctorLoginOpen(true)}
+              onToggleDiagnosisPrivacy={handleToggleDiagnosisPrivacy}
+              onOpenPrivacyModal={() => setIsDiagnosisPrivacyOpen(true)}
+              onOpenNewRx={() => {
+                if (appRole === 'doctor' && !doctorAuth.isVerified) {
+                  showToast('⚠️ Prescribing locked: Please login with verified NMC credentials', 'alert');
+                  setIsDoctorLoginOpen(true);
+                  return;
+                }
+                setIsNewRxOpen(true);
+              }}
               onOpenUpdateVitals={() => setIsUpdateVitalsOpen(true)}
               onOpenAdminister={handleOpenAdminister}
-              onOpenAddAddendum={handleOpenAddAddendum}
+              onOpenAddAddendum={(note) => {
+                if (appRole === 'doctor' && !doctorAuth.isVerified) {
+                  showToast('⚠️ Electronic signing locked: Please verify NMC doctor login', 'alert');
+                  setIsDoctorLoginOpen(true);
+                  return;
+                }
+                handleOpenAddAddendum(note);
+              }}
               onOpenAllNotes={() => setIsAllNotesOpen(true)}
               onOpenAllergyDetails={() => setIsAllergyDetailsOpen(true)}
-              onOpenAddDiagnosis={() => setIsAddDiagnosisOpen(true)}
+              onOpenAddDiagnosis={() => {
+                if (appRole === 'doctor' && !doctorAuth.isVerified) {
+                  showToast('⚠️ ICD-10 coding locked: Please verify doctor credentials', 'alert');
+                  setIsDoctorLoginOpen(true);
+                  return;
+                }
+                setIsAddDiagnosisOpen(true);
+              }}
               onOpenWellness={() => {
                 setAppRole('wellness');
                 setActiveScreen('wellness');
@@ -635,8 +800,10 @@ export default function App() {
       {/* Patient Portal Modals */}
       <FamilyDashboardModal
         isOpen={isFamilyDashboardOpen}
+        members={familyMembers}
         activeMemberId={activeFamilyMember.id}
         onSelectMember={handleSelectFamilyMember}
+        onAddMember={handleAddFamilyMember}
         onClose={() => setIsFamilyDashboardOpen(false)}
         onShowToast={showToast}
       />
@@ -645,6 +812,38 @@ export default function App() {
         patient={currentPatient}
         isOpen={isEmergencySosOpen}
         onClose={() => setIsEmergencySosOpen(false)}
+        onShowToast={showToast}
+      />
+
+      {/* Verified Doctor Login & Council Verification Modal */}
+      <DoctorLoginModal
+        isOpen={isDoctorLoginOpen}
+        onClose={() => setIsDoctorLoginOpen(false)}
+        currentAuth={doctorAuth}
+        onLoginSuccess={(newAuth) => setDoctorAuth(newAuth)}
+        onLogout={() => {
+          setDoctorAuth({
+            isVerified: false,
+            name: 'Unverified Guest Clinician',
+            nmcRegNo: 'UNVERIFIED',
+            stateMedicalCouncil: 'None',
+            qualification: 'Pending Verification',
+            hospitalStaffId: 'GUEST-0000',
+            department: 'Clinical Observation',
+            verifiedAt: 'Unverified',
+            digitalSignatureToken: '',
+          });
+          showToast('Logged out of verified doctor session. Prescribing & notes locked.', 'info');
+        }}
+        onShowToast={showToast}
+      />
+
+      {/* Patient Data Sovereignty / Diagnosis Privacy Modal */}
+      <DiagnosisPrivacyModal
+        isOpen={isDiagnosisPrivacyOpen}
+        onClose={() => setIsDiagnosisPrivacyOpen(false)}
+        patient={currentPatient}
+        onToggleDiagnosisPrivacy={handleToggleDiagnosisPrivacy}
         onShowToast={showToast}
       />
     </div>

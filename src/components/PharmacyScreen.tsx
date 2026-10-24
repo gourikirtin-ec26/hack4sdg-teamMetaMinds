@@ -15,7 +15,7 @@ export const PharmacyScreen: React.FC<PharmacyScreenProps> = ({
   const [dispenseQueue, setDispenseQueue] = useState([
     {
       id: 'disp-1',
-      patientName: 'Eleanor Vance (304B)',
+      patientName: 'Sunita Deshmukh (304B)',
       drug: 'Metformin 500 mg',
       type: 'Unit Dose Oral Blister',
       orderedTime: '08:00 AM',
@@ -24,7 +24,7 @@ export const PharmacyScreen: React.FC<PharmacyScreenProps> = ({
     },
     {
       id: 'disp-2',
-      patientName: 'Marcus Brody (302A)',
+      patientName: 'Arjun Patel (302A)',
       drug: 'Metoprolol Tartrate 25 mg',
       type: 'Unit Dose Oral',
       orderedTime: '06:45 AM',
@@ -33,7 +33,7 @@ export const PharmacyScreen: React.FC<PharmacyScreenProps> = ({
     },
     {
       id: 'disp-3',
-      patientName: 'Eleanor Vance (304B)',
+      patientName: 'Sunita Deshmukh (304B)',
       drug: 'Normal Saline 0.9% 1000 mL',
       type: 'Sterile IV Infusion Bag',
       orderedTime: '09:00 AM',

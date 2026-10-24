@@ -97,7 +97,7 @@ export const RxScreen: React.FC<RxScreenProps> = ({
 
           <div className="space-y-2">
             {[
-              { time: '08:00', med: 'Amlodipine 5 mg', status: 'Given', nurse: 'J. Morales, RN', bg: 'bg-[#6ffbbe]/30 text-[#002113]' },
+              { time: '08:00', med: 'Amlodipine 5 mg', status: 'Given', nurse: 'S. Kulkarni, RN', bg: 'bg-[#6ffbbe]/30 text-[#002113]' },
               { time: '12:00', med: 'Metformin 500 mg', status: 'Due Now', nurse: 'Awaiting Administration', bg: 'bg-[#cce5ff] text-[#00476e]' },
               { time: '18:00', med: 'Electrolyte Replacement Protocol', status: 'Scheduled', nurse: 'Pharmacy Prepared', bg: 'bg-[#eff4ff] text-[#40484c]' },
               { time: '21:00', med: 'Atorvastatin 20 mg', status: 'Scheduled', nurse: 'Night Shift Shift-B', bg: 'bg-[#eff4ff] text-[#40484c]' },
@@ -161,7 +161,7 @@ export const RxScreen: React.FC<RxScreenProps> = ({
                 </span>
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => onShowToast(`Order #${ord.id} verified by Dr. Marcus Chen, MD`)}
+                    onClick={() => onShowToast(`Order #${ord.id} verified by Dr. Rajesh Sharma, MD`)}
                     className="text-[#006398] font-bold text-xs hover:underline"
                   >
                     Verify

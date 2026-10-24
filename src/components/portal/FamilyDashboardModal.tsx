@@ -4,20 +4,23 @@ import { INITIAL_FAMILY_MEMBERS } from '../../data/portalData';
 
 interface FamilyDashboardModalProps {
   isOpen: boolean;
+  members: FamilyMember[];
   activeMemberId: string;
   onSelectMember: (member: FamilyMember) => void;
+  onAddMember?: (member: FamilyMember) => void;
   onClose: () => void;
   onShowToast: (msg: string) => void;
 }
 
 export const FamilyDashboardModal: React.FC<FamilyDashboardModalProps> = ({
   isOpen,
+  members,
   activeMemberId,
   onSelectMember,
+  onAddMember,
   onClose,
   onShowToast,
 }) => {
-  const [members, setMembers] = useState<FamilyMember[]>(INITIAL_FAMILY_MEMBERS);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [newRelation, setNewRelation] = useState<FamilyMember['relationship']>('Father');
@@ -30,23 +33,32 @@ export const FamilyDashboardModal: React.FC<FamilyDashboardModalProps> = ({
     e.preventDefault();
     if (!newName.trim()) return;
 
+    const newMemberId = `fam-${Date.now()}`;
     const newMember: FamilyMember = {
-      id: `fam-${Date.now()}`,
+      id: newMemberId,
+      patientId: `pt-${newMemberId}`,
       name: newName.trim(),
       relationship: newRelation,
       age: Number(newAge),
       gender: newRelation === 'Mother' || newRelation === 'Daughter' ? 'Female' : 'Male',
       bloodGroup: newBlood,
       abhaId: `91-8492-4820-${Math.floor(1000 + Math.random() * 9000)}@abdm`,
-      avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=160&auto=format&fit=crop&q=80',
-      activeConditions: ['General Healthcare'],
+      avatarUrl:
+        newRelation === 'Mother' || newRelation === 'Daughter'
+          ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&auto=format&fit=crop&q=80',
+      activeConditions: ['General Preventive Health'],
       allergiesCount: 0,
     };
 
-    setMembers((prev) => [...prev, newMember]);
+    if (onAddMember) {
+      onAddMember(newMember);
+    }
+    onSelectMember(newMember);
     setShowAddForm(false);
     setNewName('');
-    onShowToast(`Added ${newMember.name} (${newMember.relationship}) to Family Health Hub!`);
+    onShowToast(`Added and selected ${newMember.name} (${newMember.relationship})!`);
+    onClose();
   };
 
   return (
@@ -141,7 +153,7 @@ export const FamilyDashboardModal: React.FC<FamilyDashboardModalProps> = ({
                   type="text"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
-                  placeholder="e.g. Ramesh Vance"
+                  placeholder="e.g. Ramesh Deshmukh"
                   required
                   className="w-full h-9 px-3 bg-white border border-[#bfc8cd] rounded-lg text-xs"
                 />

@@ -61,7 +61,7 @@ export const PatientsScreen: React.FC<PatientsScreenProps> = ({
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by name, MRN, or room (e.g. Eleanor, 304B)..."
+          placeholder="Search by name, MRN, or room (e.g. Sunita, 304B)..."
           className="w-full h-11 pl-10 pr-4 text-xs bg-white border border-[#dce9ff] rounded-xl shadow-xs focus:outline-hidden focus:border-[#006398] focus:ring-2 focus:ring-[#5bb8fe]/30"
         />
         {search && (

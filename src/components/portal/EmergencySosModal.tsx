@@ -111,11 +111,15 @@ export const EmergencySosModal: React.FC<EmergencySosModalProps> = ({
           {/* Emergency Contacts */}
           <div className="p-3 rounded-xl bg-[#eff4ff] border border-[#dce9ff] flex items-center justify-between">
             <div>
-              <span className="text-[10px] text-[#70787d] uppercase font-bold block">Next of Kin / Daughter</span>
-              <strong className="text-xs text-[#004357]">Priya Vance (+91 98201 49210)</strong>
+              <span className="text-[10px] text-[#70787d] uppercase font-bold block">
+                {patient.name.includes('Priya') ? 'Next of Kin / Mother' : 'Next of Kin / Daughter'}
+              </span>
+              <strong className="text-xs text-[#004357]">
+                {patient.name.includes('Priya') ? 'Sunita Deshmukh (+91 98201 84920)' : 'Priya Deshmukh (+91 98201 49210)'}
+              </strong>
             </div>
             <a
-              href="tel:9820149210"
+              href={patient.name.includes('Priya') ? 'tel:9820184920' : 'tel:9820149210'}
               className="px-2.5 py-1.5 rounded-lg bg-[#006398] text-white font-bold text-[11px] flex items-center gap-1"
             >
               <span className="material-symbols-outlined text-[14px]">call</span>

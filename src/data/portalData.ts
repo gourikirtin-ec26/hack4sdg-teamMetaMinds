@@ -3,7 +3,7 @@ import { Appointment, Doctor, FamilyMember, HealthDocument, HomeLabTest, Invoice
 export const DOCTORS_DATA: Doctor[] = [
   {
     id: 'doc-1',
-    name: 'Dr. Marcus Chen, MD',
+    name: 'Dr. Rajesh Sharma, MD',
     specialty: 'Cardiologist',
     qualification: 'MD, DM (Cardiology), FACC',
     experience: '16 Years Exp',
@@ -63,7 +63,7 @@ export const INITIAL_APPOINTMENTS: Appointment[] = [
   {
     id: 'apt-101',
     doctorId: 'doc-1',
-    doctorName: 'Dr. Marcus Chen, MD',
+    doctorName: 'Dr. Rajesh Sharma, MD',
     specialty: 'Cardiology Follow-Up',
     hospital: 'St. Jude Heart Institute',
     location: 'Bandra West, Mumbai',
@@ -152,7 +152,7 @@ export const INITIAL_HEALTH_DOCUMENTS: HealthDocument[] = [
     id: 'doc-vault-1',
     title: 'Discharge Summary & Care Plan',
     category: 'Discharge Summary',
-    doctorOrLab: 'Dr. Marcus Chen • St. Jude ICU',
+    doctorOrLab: 'Dr. Rajesh Sharma • St. Jude ICU',
     date: 'Oct 23, 2026',
     fileSize: '1.4 MB PDF',
     tags: ['Cardiology', 'ICU', 'Discharge', 'ABDM Verified'],
@@ -188,7 +188,7 @@ export const INITIAL_HEALTH_DOCUMENTS: HealthDocument[] = [
     id: 'doc-vault-4',
     title: 'E-Prescription & Medicine Intake Schedule',
     category: 'Prescription',
-    doctorOrLab: 'Dr. Marcus Chen, MD • Inpatient Rounds',
+    doctorOrLab: 'Dr. Rajesh Sharma, MD • Inpatient Rounds',
     date: 'Oct 23, 2026',
     fileSize: '620 KB PDF',
     tags: ['Prescription', 'e-Rx', 'Daily Schedule'],
@@ -243,7 +243,7 @@ export const INITIAL_INVOICES: InvoiceBill[] = [
     id: 'inv-103',
     invoiceNo: 'INV-2026-85199',
     date: 'Oct 26, 2026 (Scheduled)',
-    service: 'Outpatient Follow-Up Consultation (Dr. Marcus Chen)',
+    service: 'Outpatient Follow-Up Consultation (Dr. Rajesh Sharma)',
     provider: 'St. Jude Heart Institute Bandra',
     grossAmount: 1200,
     insuranceCovered: 0,
@@ -255,7 +255,8 @@ export const INITIAL_INVOICES: InvoiceBill[] = [
 export const INITIAL_FAMILY_MEMBERS: FamilyMember[] = [
   {
     id: 'fam-1',
-    name: 'Eleanor Vance',
+    patientId: 'pt-sunita-deshmukh',
+    name: 'Sunita Deshmukh',
     relationship: 'Self',
     age: 58,
     gender: 'Female',
@@ -267,7 +268,8 @@ export const INITIAL_FAMILY_MEMBERS: FamilyMember[] = [
   },
   {
     id: 'fam-2',
-    name: 'Rajesh Vance',
+    patientId: 'pt-ramakant-deshmukh',
+    name: 'Ramakant Deshmukh',
     relationship: 'Father',
     age: 62,
     gender: 'Male',
@@ -279,7 +281,8 @@ export const INITIAL_FAMILY_MEMBERS: FamilyMember[] = [
   },
   {
     id: 'fam-3',
-    name: 'Priya Vance',
+    patientId: 'pt-priya-deshmukh',
+    name: 'Priya Deshmukh',
     relationship: 'Daughter',
     age: 26,
     gender: 'Female',

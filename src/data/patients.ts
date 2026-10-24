@@ -2,8 +2,8 @@ import { Patient, RxOrder } from '../types/clinical';
 
 export const INITIAL_PATIENTS: Patient[] = [
   {
-    id: 'pt-eleanor-vance',
-    name: 'Eleanor Vance',
+    id: 'pt-sunita-deshmukh',
+    name: 'Sunita Deshmukh',
     age: 58,
     gender: 'Female',
     mrn: '#MS-84920',
@@ -28,7 +28,7 @@ export const INITIAL_PATIENTS: Patient[] = [
     ],
     acuity: 'Stable',
     admitDate: 'Oct 21, 2026',
-    attendingDoctor: 'Dr. Marcus Chen, MD',
+    attendingDoctor: 'Dr. Rajesh Sharma, MD',
     vitals: {
       bpSystolic: 128,
       bpDiastolic: 82,
@@ -53,7 +53,7 @@ export const INITIAL_PATIENTS: Patient[] = [
       id: 'note-112',
       noteNumber: 112,
       type: 'SOAP Note',
-      authorName: 'Dr. Marcus Chen, MD',
+      authorName: 'Dr. Rajesh Sharma, MD',
       authorRole: 'Attending',
       department: 'Cardiology Inpatient Rounds',
       timestamp: 'Today, 08:30 AM',
@@ -66,7 +66,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         id: 'note-111',
         noteNumber: 111,
         type: 'Progress Note',
-        authorName: 'Dr. Sarah Lin, MD',
+        authorName: 'Dr. Ananya Nair, MD',
         authorRole: 'Fellow',
         department: 'Cardiology',
         timestamp: 'Yesterday, 17:15 PM',
@@ -78,7 +78,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         id: 'note-110',
         noteNumber: 110,
         type: 'Nursing Shift Note',
-        authorName: 'Jessica Morales, RN',
+        authorName: 'Sunita Kulkarni, RN',
         authorRole: 'Primary ICU Nurse',
         department: 'ICU Station 3',
         timestamp: 'Yesterday, 07:00 AM',
@@ -90,7 +90,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         id: 'note-109',
         noteNumber: 109,
         type: 'Consultation',
-        authorName: 'Dr. James Thorne, MD',
+        authorName: 'Dr. Vikram Patel, MD',
         authorRole: 'Endocrinologist',
         department: 'Endocrinology Consult',
         timestamp: 'Oct 21, 2026, 14:00 PM',
@@ -126,7 +126,9 @@ export const INITIAL_PATIENTS: Patient[] = [
         icd10: 'M17.0',
         onsetYear: '2021',
         details: 'Bilateral knee joint stiffness exacerbated by prolonged bed rest. Physical therapy assigned.',
-        icon: 'accessibility_new'
+        icon: 'accessibility_new',
+        isPrivate: true,
+        consentNotes: 'Patient exercised ABDM privacy consent to hide this condition from family member accounts.'
       }
     ],
     medications: [
@@ -139,7 +141,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         timingLabel: 'Due 12:00',
         dueTime: '12:00',
         status: 'due',
-        prescribedBy: 'Dr. James Thorne, MD',
+        prescribedBy: 'Dr. Vikram Patel, MD',
         category: 'Antidiabetic'
       },
       {
@@ -152,8 +154,8 @@ export const INITIAL_PATIENTS: Patient[] = [
         dueTime: '08:00',
         status: 'given',
         administeredTime: '08:00 AM',
-        administeredBy: 'Nurse J. Morales, RN',
-        prescribedBy: 'Dr. Marcus Chen, MD',
+        administeredBy: 'Nurse S. Kulkarni, RN',
+        prescribedBy: 'Dr. Rajesh Sharma, MD',
         category: 'Antihypertensive (CCB)'
       },
       {
@@ -165,7 +167,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         timingLabel: 'Due 21:00',
         dueTime: '21:00',
         status: 'scheduled',
-        prescribedBy: 'Dr. Marcus Chen, MD',
+        prescribedBy: 'Dr. Rajesh Sharma, MD',
         category: 'HMG-CoA Reductase Inhibitor (Statin)'
       }
     ],
@@ -206,8 +208,8 @@ export const INITIAL_PATIENTS: Patient[] = [
     ]
   },
   {
-    id: 'pt-marcus-brody',
-    name: 'Marcus Brody',
+    id: 'pt-arjun-patel',
+    name: 'Arjun Patel',
     age: 64,
     gender: 'Male',
     mrn: '#MS-84912',
@@ -231,7 +233,7 @@ export const INITIAL_PATIENTS: Patient[] = [
     ],
     acuity: 'Urgent',
     admitDate: 'Oct 20, 2026',
-    attendingDoctor: 'Dr. Aris Thorne, MD',
+    attendingDoctor: 'Dr. Vikram Swaminathan, MD',
     vitals: {
       bpSystolic: 134,
       bpDiastolic: 86,
@@ -250,7 +252,7 @@ export const INITIAL_PATIENTS: Patient[] = [
       id: 'note-201',
       noteNumber: 201,
       type: 'Post-Op Rounds',
-      authorName: 'Dr. Aris Thorne, MD',
+      authorName: 'Dr. Vikram Swaminathan, MD',
       authorRole: 'Cardiothoracic Surgery',
       department: 'CVICU',
       timestamp: 'Today, 07:45 AM',
@@ -287,7 +289,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         timingLabel: 'Due 12:00',
         dueTime: '12:00',
         status: 'due',
-        prescribedBy: 'Dr. Aris Thorne, MD'
+        prescribedBy: 'Dr. Vikram Swaminathan, MD'
       },
       {
         id: 'med-b2',
@@ -299,7 +301,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         dueTime: '08:00',
         status: 'given',
         administeredTime: '08:00 AM',
-        prescribedBy: 'Dr. Aris Thorne, MD'
+        prescribedBy: 'Dr. Vikram Swaminathan, MD'
       }
     ],
     labs: [
@@ -317,8 +319,8 @@ export const INITIAL_PATIENTS: Patient[] = [
     ]
   },
   {
-    id: 'pt-clara-higgins',
-    name: 'Clara Higgins',
+    id: 'pt-kavita-iyer',
+    name: 'Kavita Iyer',
     age: 71,
     gender: 'Female',
     mrn: '#MS-84931',
@@ -342,7 +344,7 @@ export const INITIAL_PATIENTS: Patient[] = [
     ],
     acuity: 'Stable',
     admitDate: 'Oct 19, 2026',
-    attendingDoctor: 'Dr. Marcus Chen, MD',
+    attendingDoctor: 'Dr. Rajesh Sharma, MD',
     vitals: {
       bpSystolic: 122,
       bpDiastolic: 78,
@@ -361,7 +363,7 @@ export const INITIAL_PATIENTS: Patient[] = [
       id: 'note-301',
       noteNumber: 301,
       type: 'Heart Failure Rounds',
-      authorName: 'Dr. Marcus Chen, MD',
+      authorName: 'Dr. Rajesh Sharma, MD',
       authorRole: 'Attending',
       department: 'Cardiology',
       timestamp: 'Today, 09:15 AM',
@@ -398,7 +400,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         timingLabel: 'Due 12:00',
         dueTime: '12:00',
         status: 'due',
-        prescribedBy: 'Dr. Marcus Chen, MD'
+        prescribedBy: 'Dr. Rajesh Sharma, MD'
       },
       {
         id: 'med-c2',
@@ -410,7 +412,7 @@ export const INITIAL_PATIENTS: Patient[] = [
         dueTime: '08:00',
         status: 'given',
         administeredTime: '08:00 AM',
-        prescribedBy: 'Dr. Marcus Chen, MD'
+        prescribedBy: 'Dr. Rajesh Sharma, MD'
       }
     ],
     labs: [
@@ -426,63 +428,341 @@ export const INITIAL_PATIENTS: Patient[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'pt-ramakant-deshmukh',
+    name: 'Ramakant Deshmukh',
+    age: 62,
+    gender: 'Male',
+    mrn: '#MS-84921',
+    room: 'Home Care / OPD',
+    department: 'Pulmonology & Geriatric Wellness',
+    bloodType: 'O+',
+    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=160&auto=format&fit=crop&q=80',
+    abhaId: '91-8492-4820-2204@abdm',
+    allergies: [
+      {
+        id: 'all-rd-1',
+        allergen: 'DUST & POLLEN',
+        severity: 'Mild',
+        reaction: 'Allergic rhinitis and mild wheezing',
+        confirmedDate: '2020-04-12'
+      }
+    ],
+    alerts: [
+      'ASTHMA ACTION PLAN ACTIVE',
+      'Daily Peak Flow Monitoring',
+      'Cholesterol Management'
+    ],
+    acuity: 'Stable',
+    admitDate: 'Active Ambulatory',
+    attendingDoctor: 'Dr. Ananya Sharma, MBBS, MD',
+    vitals: {
+      bpSystolic: 124,
+      bpDiastolic: 80,
+      bpStatus: 'Normal Target',
+      pulse: 72,
+      rhythm: 'Regular Sinus',
+      spO2: 97,
+      spO2Mode: 'Room Air',
+      glucose: 102,
+      glucoseState: 'Fasting',
+      temp: 98.4,
+      respRate: 15,
+      syncTimeAgo: 'Sync 25m ago',
+      history: [
+        { time: '02:00', bp: '122/78', pulse: 70, spO2: 97, glucose: 98 },
+        { time: '06:00', bp: '124/80', pulse: 72, spO2: 97, glucose: 102 }
+      ]
+    },
+    recentNote: {
+      id: 'note-rd-1',
+      noteNumber: 214,
+      type: 'SOAP Note',
+      authorName: 'Dr. Ananya Sharma, MBBS, MD',
+      authorRole: 'Attending Physician',
+      department: 'Pulmonology & Wellness',
+      timestamp: 'Today, 09:30 AM',
+      content: '“Patient evaluated for seasonal asthma follow-up. Chest clear to auscultation bilaterally. Peak Expiratory Flow 450 L/min. Rosuvastatin lipid profile well-controlled. Continue Salbutamol PRN.”',
+      signedElectronically: true,
+      addenda: []
+    },
+    pastNotes: [],
+    diagnoses: [
+      {
+        id: 'dx-rd-1',
+        name: 'Mild Asthma',
+        status: 'Managed',
+        icd10: 'J45.20',
+        onsetYear: '2019',
+        details: 'Mild intermittent bronchial asthma, well controlled on maintenance inhaler.',
+        icon: 'air'
+      },
+      {
+        id: 'dx-rd-2',
+        name: 'Hyperlipidemia',
+        status: 'Managed',
+        icd10: 'E78.5',
+        onsetYear: '2021',
+        details: 'Elevated baseline cholesterol responsive to dietary adjustments and Rosuvastatin 10mg.',
+        icon: 'ecg_heart'
+      }
+    ],
+    medications: [
+      {
+        id: 'med-rd-1',
+        name: 'Salbutamol Inhaler',
+        dosage: '100 mcg',
+        route: 'Inhalation',
+        frequency: 'PRN (As needed for wheezing)',
+        timingLabel: 'PRN As Needed',
+        dueTime: 'PRN',
+        status: 'scheduled',
+        prescribedBy: 'Dr. Ananya Sharma, MBBS, MD',
+        category: 'Bronchodilator'
+      },
+      {
+        id: 'med-rd-2',
+        name: 'Rosuvastatin',
+        dosage: '10 mg',
+        route: 'Oral',
+        frequency: 'Daily (Bedtime)',
+        timingLabel: 'Due 21:00',
+        dueTime: '21:00',
+        status: 'due',
+        prescribedBy: 'Dr. Rajesh Sharma, MD',
+        category: 'Lipid-Lowering Statin'
+      },
+      {
+        id: 'med-rd-3',
+        name: 'Montelukast',
+        dosage: '10 mg',
+        route: 'Oral',
+        frequency: 'Daily (Bedtime)',
+        timingLabel: 'Due 21:00',
+        dueTime: '21:00',
+        status: 'scheduled',
+        prescribedBy: 'Dr. Ananya Sharma, MBBS, MD',
+        category: 'Leukotriene Receptor Antagonist'
+      }
+    ],
+    labs: [
+      {
+        id: 'lab-rd-1',
+        title: 'Lipid & Metabolic Profile',
+        collectedTime: 'Collected Yesterday',
+        status: 'Completed',
+        metrics: [
+          { key: 'chol', label: 'Total Cholesterol', value: 184, unit: 'mg/dL', refRange: '<200 mg/dL', status: 'normal' },
+          { key: 'ldl', label: 'LDL Cholesterol', value: 96, unit: 'mg/dL', refRange: '<100 mg/dL', status: 'normal' },
+          { key: 'hdl', label: 'HDL Cholesterol', value: 48, unit: 'mg/dL', refRange: '>40 mg/dL', status: 'normal' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'pt-priya-deshmukh',
+    name: 'Priya Deshmukh',
+    age: 26,
+    gender: 'Female',
+    mrn: '#MS-84922',
+    room: 'Outpatient / Home Care',
+    department: 'General Wellness & Neurology',
+    bloodType: 'A+',
+    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80',
+    abhaId: '91-8492-4820-3309@abdm',
+    allergies: [
+      {
+        id: 'all-pd-1',
+        allergen: 'SULFA ANTIBIOTICS',
+        severity: 'Moderate',
+        reaction: 'Erythematous skin rash, facial warmth (2021)',
+        confirmedDate: '2021-09-18'
+      }
+    ],
+    alerts: [
+      'SULFA DRUG SENSITIVITY',
+      'Preventive Yoga & Fitness Routine',
+      'Hydration Goal 2.5L'
+    ],
+    acuity: 'Stable',
+    admitDate: 'Active Ambulatory',
+    attendingDoctor: 'Dr. Meera Nambiar, MD, DM',
+    vitals: {
+      bpSystolic: 114,
+      bpDiastolic: 74,
+      bpStatus: 'Normal Target',
+      pulse: 68,
+      rhythm: 'Sinus Rhythm',
+      spO2: 99,
+      spO2Mode: 'Room Air',
+      glucose: 88,
+      glucoseState: 'Fasting',
+      temp: 98.6,
+      respRate: 14,
+      syncTimeAgo: 'Sync 12m ago',
+      history: [
+        { time: '06:00', bp: '112/72', pulse: 66, spO2: 99, glucose: 86 },
+        { time: '08:00', bp: '114/74', pulse: 68, spO2: 99, glucose: 88 }
+      ]
+    },
+    recentNote: {
+      id: 'note-pd-1',
+      noteNumber: 188,
+      type: 'Neurology Review',
+      authorName: 'Dr. Meera Nambiar, MD, DM',
+      authorRole: 'Consultant Neurologist',
+      department: 'Neurology Clinic',
+      timestamp: 'Today, 11:15 AM',
+      content: '“Migraine frequency successfully reduced with lifestyle stress-relief, yoga, and low-dose Propranolol prophylaxis. Visual aura absent in last 60 days. Continue daily hydration and sleep routine.”',
+      signedElectronically: true,
+      addenda: []
+    },
+    pastNotes: [],
+    diagnoses: [
+      {
+        id: 'dx-pd-1',
+        name: 'Migraine Prophylaxis',
+        status: 'Monitored',
+        icd10: 'G43.909',
+        onsetYear: '2022',
+        details: 'Stress-induced migraine episodes responsive to beta-blocker prophylaxis and regular sleep schedule.',
+        icon: 'psychology'
+      },
+      {
+        id: 'dx-pd-2',
+        name: 'General Wellness & Fitness',
+        status: 'Managed',
+        icd10: 'Z00.00',
+        onsetYear: '2024',
+        details: 'Active yoga and Pilates routine, regular biometric tracking through Medisync app.',
+        icon: 'fitness_center'
+      }
+    ],
+    medications: [
+      {
+        id: 'med-pd-1',
+        name: 'Propranolol',
+        dosage: '20 mg',
+        route: 'Oral',
+        frequency: 'Daily (Morning)',
+        timingLabel: 'Given 08:00',
+        dueTime: '08:00',
+        status: 'given',
+        prescribedBy: 'Dr. Meera Nambiar, MD, DM',
+        category: 'Migraine Prophylactic Beta-Blocker'
+      },
+      {
+        id: 'med-pd-2',
+        name: 'CoQ10 & Vitamin B2 Complex',
+        dosage: '100 mg / 400 mg',
+        route: 'Oral',
+        frequency: 'Daily (Morning)',
+        timingLabel: 'Due 12:00',
+        dueTime: '12:00',
+        status: 'due',
+        prescribedBy: 'Dr. Meera Nambiar, MD, DM',
+        category: 'Neuro-Nutritional Supplement'
+      }
+    ],
+    labs: [
+      {
+        id: 'lab-pd-1',
+        title: 'Complete Wellness Screening',
+        collectedTime: 'Oct 22, 2026',
+        status: 'Completed',
+        metrics: [
+          { key: 'hgb', label: 'Hemoglobin', value: 13.6, unit: 'g/dL', refRange: '12.0 - 15.5 g/dL', status: 'normal' },
+          { key: 'vitd', label: 'Vitamin D3 (25-OH)', value: 38, unit: 'ng/mL', refRange: '30 - 100 ng/mL', status: 'normal' },
+          { key: 'ferritin', label: 'Serum Ferritin', value: 44, unit: 'ng/mL', refRange: '15 - 150 ng/mL', status: 'normal' }
+        ]
+      }
+    ]
   }
 ];
 
 export const INITIAL_RX_ORDERS: RxOrder[] = [
   {
     id: 'rx-101',
-    patientId: 'pt-eleanor-vance',
-    patientName: 'Eleanor Vance (304B)',
+    patientId: 'pt-sunita-deshmukh',
+    patientName: 'Sunita Deshmukh (304B)',
     medName: 'Metformin',
     dosage: '500 mg',
     route: 'Oral',
     frequency: 'BID (With meals)',
     indication: 'Type 2 Diabetes Glycemic Control',
-    prescribingDoctor: 'Dr. James Thorne, MD',
+    prescribingDoctor: 'Dr. Vikram Patel, MD',
     orderedAt: 'Today, 08:00 AM',
     status: 'Active MAR',
     urgent: false
   },
   {
     id: 'rx-102',
-    patientId: 'pt-eleanor-vance',
-    patientName: 'Eleanor Vance (304B)',
+    patientId: 'pt-sunita-deshmukh',
+    patientName: 'Sunita Deshmukh (304B)',
     medName: 'Amlodipine',
     dosage: '5 mg',
     route: 'Oral',
     frequency: 'Daily (Morning)',
     indication: 'Essential Hypertension',
-    prescribingDoctor: 'Dr. Marcus Chen, MD',
+    prescribingDoctor: 'Dr. Rajesh Sharma, MD',
     orderedAt: 'Today, 07:30 AM',
     status: 'Active MAR',
     urgent: false
   },
   {
     id: 'rx-103',
-    patientId: 'pt-eleanor-vance',
-    patientName: 'Eleanor Vance (304B)',
+    patientId: 'pt-sunita-deshmukh',
+    patientName: 'Sunita Deshmukh (304B)',
     medName: 'Atorvastatin',
     dosage: '20 mg',
     route: 'Oral',
     frequency: 'QHS (Bedtime)',
     indication: 'Dyslipidemia & Vascular Prophylaxis',
-    prescribingDoctor: 'Dr. Marcus Chen, MD',
+    prescribingDoctor: 'Dr. Rajesh Sharma, MD',
     orderedAt: 'Today, 08:30 AM',
     status: 'Active MAR',
     urgent: false
   },
   {
     id: 'rx-104',
-    patientId: 'pt-marcus-brody',
-    patientName: 'Marcus Brody (302A)',
+    patientId: 'pt-arjun-patel',
+    patientName: 'Arjun Patel (302A)',
     medName: 'Metoprolol Tartrate',
     dosage: '25 mg',
     route: 'Oral',
     frequency: 'BID',
     indication: 'Post-CABG Rate Control',
-    prescribingDoctor: 'Dr. Aris Thorne, MD',
+    prescribingDoctor: 'Dr. Vikram Swaminathan, MD',
     orderedAt: 'Today, 06:45 AM',
+    status: 'Active MAR',
+    urgent: false
+  },
+  {
+    id: 'rx-105',
+    patientId: 'pt-ramakant-deshmukh',
+    patientName: 'Ramakant Deshmukh (Father)',
+    medName: 'Salbutamol Inhaler',
+    dosage: '100 mcg',
+    route: 'Inhalation',
+    frequency: 'PRN (As needed)',
+    indication: 'Bronchial Asthma Bronchodilation',
+    prescribingDoctor: 'Dr. Ananya Sharma, MBBS, MD',
+    orderedAt: 'Today, 09:30 AM',
+    status: 'Active MAR',
+    urgent: false
+  },
+  {
+    id: 'rx-106',
+    patientId: 'pt-priya-deshmukh',
+    patientName: 'Priya Deshmukh (Daughter)',
+    medName: 'Propranolol',
+    dosage: '20 mg',
+    route: 'Oral',
+    frequency: 'Daily (Morning)',
+    indication: 'Migraine Prophylaxis',
+    prescribingDoctor: 'Dr. Meera Nambiar, MD, DM',
+    orderedAt: 'Today, 11:15 AM',
     status: 'Active MAR',
     urgent: false
   }

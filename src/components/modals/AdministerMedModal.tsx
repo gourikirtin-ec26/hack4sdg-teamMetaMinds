@@ -17,7 +17,7 @@ export const AdministerMedModal: React.FC<AdministerMedModalProps> = ({
   onConfirmAdminister,
 }) => {
   const [barcodeScanned, setBarcodeScanned] = useState(false);
-  const [nurseName, setNurseName] = useState('J. Morales, RN');
+  const [nurseName, setNurseName] = useState('S. Kulkarni, RN');
   const [siteNotes, setSiteNotes] = useState('Administered with lunch meal as scheduled.');
 
   if (!isOpen || !medication) return null;

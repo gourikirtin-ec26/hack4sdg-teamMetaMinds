@@ -17,7 +17,7 @@ export const AddAddendumModal: React.FC<AddAddendumModalProps> = ({
   onSaveAddendum,
 }) => {
   const [addendumText, setAddendumText] = useState('');
-  const [authorName, setAuthorName] = useState('Dr. Marcus Chen, MD');
+  const [authorName, setAuthorName] = useState('Dr. Rajesh Sharma, MD');
   const [authorRole, setAuthorRole] = useState('Attending');
   const [signedElectronically, setSignedElectronically] = useState(true);
 
